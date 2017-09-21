@@ -20,6 +20,7 @@
     <button type="submit" class="btn">Add Patron</button>
   <% else %>
     <a href="/patrons/<%= @patron.id %>"><button type="button" class="btn">Cancel</button></a>
-    <button type="submit" class="btn">Update  Patron</button>
+    <button type="submit" class="btn">Update Patron</button>
+    <a href="/patrons/<%= @patron.id %>/delete"><button type="button" class="btn">Delete Patron</button></a>
   <% end %>
 </form>

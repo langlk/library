@@ -222,18 +222,32 @@ patch('/update-account') do
     erb(:account_form)
   end
 end
-#REFACTOR ZONE
 
-delete('/admin/patrons/:id') do
-  id = params[:id].to_i
-  patron = Patron.find(id).first
-  patron.delete
-  redirect "/admin/patrons"
+get('/:type/:id/delete') do
+  @type = params[:type]
+  @id = params[:id]
+  erb(:delete)
 end
 
-delete('/admin/books/:id') do
-  id = params[:id].to_i
-  book = Book.find(id).first
-  book.delete
-  redirect "/admin/books"
+delete('/:type/:id') do
+  @type = params[:type]
+  if @type == "account"
+    if @user.check_password?(params["password"])
+      @user.delete
+      session.clear
+      redirect '/'
+    else
+      @id = params[:id]
+      @error = true
+      erb(:delete)
+    end
+  elsif @type == "catalog"
+    book = Book.find(params[:id].to_i).first
+    book.delete
+    redirect '/catalog'
+  else
+    patron = Patron.find(params[:id].to_i).first
+    patron.delete
+    redirect '/patrons'
+  end
 end
