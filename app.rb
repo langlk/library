@@ -165,6 +165,17 @@ get('/patrons/:id/edit') do
   erb(:patron_form)
 end
 
+get('/account/:type') do
+  @type = params[:type]
+  @patron = Patron.find(@user.patron_id).first
+  @checkouts = @patron.get_checkouts
+  erb(:checkouts)
+end
+
+get('/account') do
+  @patron = @user.admin ? nil : Patron.find(@user.patron_id).first
+  erb(:account)
+end
 #REFACTOR ZONE
 
 patch('/patrons/:id') do

@@ -1,0 +1,17 @@
+<h1>Account Information</h1>
+
+<h5><a href="/update-account">Update</a></h5>
+
+<p><strong>Username:</strong> <%= @user.username %></p>
+
+<p><strong>Email:</strong> <%= @user.email %></p>
+
+<% if @patron %>
+  <p><strong>Name:</strong> <%= @patron.full_name %></p>
+
+  <p><strong>Patron ID:</strong> <%= @patron.id %></p>
+<% end %>
+
+<p>
+  <strong>Account Type:</strong> <%= @user.admin ? "Administrator" : "Patron" %>
+</p>

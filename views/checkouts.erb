@@ -1,0 +1,23 @@
+<% if @type == "history" %>
+  <h1>Checkout History</h1>
+<% else %>
+  <h1>Checked Out Items</h1>
+<% end %>
+
+<% if @checkouts.any? %>
+  <ul>
+    <% @checkouts.each do |checkout| %>
+      <% if (@type == "history") %>
+        <% book = Book.find(checkout.book_id).first %>
+        <li>
+          <a href="/catalog/<%= book.id %>"><em><%= book.title %></em></a> Checked Out: <%= checkout.checkout_date %>
+        </li>
+      <% elsif (@type == "checkouts") & !checkout.checked_in %>
+        <% book = Book.find(checkout.book_id).first %>
+        <li>
+          <a href="/catalog/<%= book.id %>"><em><%= book.title %></em></a> Due: <%= checkout.due_date %>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
