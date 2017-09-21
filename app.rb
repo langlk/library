@@ -57,7 +57,7 @@ get('/login') do
 end
 
 get('/signup') do
-  erb(:signup)
+  erb(:account_form)
 end
 
 post('/login') do
@@ -204,16 +204,24 @@ get('/account') do
   @patron = @user.admin ? nil : Patron.find(@user.patron_id).first
   erb(:account)
 end
-#REFACTOR ZONE
 
-patch('/patrons/:id') do
-  id = params[:id].to_i
-  patron = Patron.find(id).first
-  patron.first_name = params['first-name']
-  patron.last_name = params['last-name']
-  patron.save
-  redirect "/admin/patrons/#{patron.id}"
+get('/update-account') do
+  erb(:account_form)
 end
+
+patch('/update-account') do
+  if @user.check_password?(params["password"])
+    @user.username = params["username"]
+    @user.email = params["email"]
+    @user.password = params["new-password"]
+    @user.save
+    redirect '/account'
+  else
+    @error = true
+    erb(:account_form)
+  end
+end
+#REFACTOR ZONE
 
 delete('/admin/patrons/:id') do
   id = params[:id].to_i

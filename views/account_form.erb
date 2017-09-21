@@ -1,0 +1,45 @@
+<% if !@user %>
+  <h1>Create an Account</h1>
+
+  <form action="/signup" method="post">
+    <div class="form-group">
+      <label for="patron-id">Patron ID</label>
+      <input type="number" name="patron-id" class=form-control>
+    </div>
+<% else %>
+  <h1>Update User Account</h1>
+  <form action="/update-account" method="post">
+    <input type="hidden" name="_method" value="patch">
+<% end %>
+
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input type="text" name="username" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" name="email" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" name="password" class="form-control">
+  </div>
+
+  <% if @error %>
+    <div class="alert alert-danger">
+      Must enter correct password to update.
+    </div>
+  <% end %>
+
+  <% if @user %>
+    <div class="form-group">
+      <label for="new-password">New Password</label>
+      <input type="password" name="new-password" class="form-control">
+    </div>
+
+    <a href="/account"><button type="button" class="btn">Cancel</button></a>
+  <% end %>
+  <button type="submit" class="btn">Submit</button>
+</form>
