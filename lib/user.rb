@@ -31,6 +31,10 @@ class User
     @admin = true
   end
 
+  def delete
+    DB.exec("DELETE FROM users WHERE id = #{@id};")
+  end
+
   def self.all
     results = DB.exec("SELECT * FROM users;")
     results.map do |user|

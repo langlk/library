@@ -13,42 +13,43 @@ require "pry"
 DB = PG.connect({:dbname => 'library_test'})
 enable :sessions
 
-admin = User.new({
-  patron_id: -1,
-  email: "admin@library.com",
-  username: "librarian",
-  password: "library",
-  admin: true
-})
-admin.save
-
-book = Book.new({
-  title: "Harry Potter",
-  author_first: "J. K.",
-  author_last: "Rowling"
-})
-book.save
-
-patron = Patron.new({
-  first_name: "Bob",
-  last_name: "Bobbington",
-})
-patron.save
-
-user = User.new({
-  username: "bob",
-  password: "1234",
-  patron_id: patron.id,
-  email: "bob@email.com"
-})
-user.save
-
 # ROUTES
 before do
   @user = session[:id] != nil ? User.find_id(session[:id]) : nil
 end
 
 get('/') do
+  # Code For Testing
+  admin = User.new({
+    patron_id: -1,
+    email: "admin@library.com",
+    username: "librarian",
+    password: "library",
+    admin: true
+  })
+  admin.save
+
+  book = Book.new({
+    title: "Harry Potter",
+    author_first: "J. K.",
+    author_last: "Rowling"
+  })
+  book.save
+
+  patron = Patron.new({
+    first_name: "Bob",
+    last_name: "Bobbington",
+  })
+  patron.save
+
+  user = User.new({
+    username: "bob",
+    password: "1234",
+    patron_id: patron.id,
+    email: "bob@email.com"
+  })
+  user.save
+  # End Testing code
   erb(:index)
 end
 

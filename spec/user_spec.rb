@@ -47,12 +47,19 @@ describe('User') do
     end
   end
 
+  describe('#delete') do
+    it "removes a user from the database" do
+      test_user.save
+      test_user.delete
+      expect(User.all).to eq([])
+    end
+  end
+
   describe(".all") do
     it "returns a list of all users in the database" do
       expect(User.all).to eq([])
     end
   end
-
 
   describe('.find_id') do
     it "finds a user by their id" do
