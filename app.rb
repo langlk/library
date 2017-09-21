@@ -133,6 +133,23 @@ post('/add-book') do
   redirect "/catalog"
 end
 
+get('/catalog/:book_id/edit') do
+  @book = Book.find(params[:book_id].to_i).first
+  @action = "edit"
+  erb(:book_form)
+end
+
+patch('/catalog/:book_id/edit') do
+  @book = Book.find(params[:book_id].to_i).first
+  if @book
+    @book.title = params["title"]
+    @book.author_first = params["author-first"]
+    @book.author_last = params["author-last"]
+    @book.save
+  end
+  redirect "/catalog/#{@book.id}"
+end
+
 get('/patrons') do
   @patrons = Patron.all
   erb(:patrons)

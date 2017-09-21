@@ -18,7 +18,7 @@ class Book
 
   def save
     if @id
-      DB.exec("UPDATE books SET checked_in = #{@checked_in} WHERE id = #{@id};")
+      DB.exec("UPDATE books SET title = '#{@title}', author_first = '#{@author_first}', author_last = '#{author_last}', checked_in = #{@checked_in} WHERE id = #{@id};")
     else
       results = DB.exec("INSERT INTO books (title, author_first, author_last, checked_in) VALUES ('#{@title}', '#{@author_first}', '#{@author_last}', #{@checked_in}) RETURNING id;")
       @id = results.first['id'].to_i

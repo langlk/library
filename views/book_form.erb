@@ -1,23 +1,31 @@
-<h1><%= @action.capitalize %> a Book</h1>
-
-<form action="/<%= @action %>-book" method="post">
-  <% if @action == "edit" %>
+<% if @action == "add" %>
+  <h1>Add a Book</h1>
+  <form action="/add-book" method="post">
+<% else %>
+  <h1>Edit Book Information</h1>
+  <form action="/catalog/<%= @book.id %>/edit" method="post">
     <input type="hidden" name="_method" value="patch">
-  <% end %>
+<% end %>
+
   <div class="form-group">
     <label for="title">Title:</label>
-    <input type="text" name="title" class="form-control">
+    <input type="text" name="title" class="form-control" value="<%= @book ? @book.title : "" %>">
   </div>
 
   <div class="form-group">
     <label for="author-first">Author First Name:</label>
-    <input type="text" name="author-first" class="form-control">
+    <input type="text" name="author-first" class="form-control" value="<%= @book ? @book.author_first : "" %>">
   </div>
 
   <div class="form-group">
     <label for="author-last">Author Last Name:</label>
-    <input type="text" name="author-last" class="form-control">
+    <input type="text" name="author-last" class="form-control" value="<%= @book ? @book.author_last : "" %>">
   </div>
 
-  <button type="submit" class="btn"><%= @action.capitalize %> Book</button>
+  <% if @action == "add" %>
+    <button type="submit" class="btn">Add Book</button>
+  <% else %>
+    <a href="/catalog/<%= @book.id %>"><button type="button" class="btn">Cancel</button></a>
+    <button type="submit" class="btn">Update Book</button>
+  <% end %>
 </form>

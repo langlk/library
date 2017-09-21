@@ -24,6 +24,7 @@
   <% else %>
     <p>No Checkout History</p>
   <% end %>
+
 <% else %>
   <% if @book.checked_in %>
     <form action="/catalog/<%= @book.id %>/checkout" method="post">
@@ -37,4 +38,5 @@
     </form>
   <% end %>
 <% end %>
+
 <p><a href="/catalog">Back to Catalog</a></p>
