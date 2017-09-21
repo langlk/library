@@ -104,7 +104,6 @@ patch('/catalog/:book_id/checkout') do
   if @user
     book_id = params[:book_id].to_i
     book = Book.find(book_id).first
-    binding.pry
     book.checkout(@user.patron_id)
   end
   redirect "/catalog/#{book_id}"

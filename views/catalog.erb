@@ -9,7 +9,7 @@
 <% if @books.any? %>
   <ul>
     <% @books.each do |book| %>
-      <li>
+      <li class="book">
         <a href="/catalog/<%= book.id %>"><%= book.title %></a>
       </li>
     <% end %>

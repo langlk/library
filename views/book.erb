@@ -1,8 +1,11 @@
 <h1>Book Record</h1>
 
-<% if @user.admin %>
-  <h5><a href="/catalog/<%= @book.id %>/edit">Edit or Delete</a></h5>
+<% if @user %>
+  <% if @user.admin %>
+    <h5><a href="/catalog/<%= @book.id %>/edit">Edit or Delete</a></h5>
+  <% end %>
 <% end %>
+
 
 <p><strong>Title:</strong> <em><%= @book.title %></em></p>
 <p><strong>Author:</strong> <%= @book.author_name %></p>
@@ -10,33 +13,36 @@
   <%= @book.checked_in ? "Checked In" : "Checked Out" %>
 </strong></p>
 
-<% if @user.admin %>
-  <p><strong>Checkout Log:</strong></p>
-  <% if @book.get_checkouts.any? %>
-    <ul>
-      <% @book.get_checkouts.each do |record| %>
-        <% patron = Patron.find(record.patron_id).first %>
-        <li>
-          <strong><%= patron.full_name %></strong> on <%= record.checkout_date %>
-        </li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p>No Checkout History</p>
-  <% end %>
+<% if @user %>
+  <% if @user.admin %>
+    <p><strong>Checkout Log:</strong></p>
+    <% if @book.get_checkouts.any? %>
+      <ul>
+        <% @book.get_checkouts.each do |record| %>
+          <% patron = Patron.find(record.patron_id).first %>
+          <li>
+            <strong><%= patron.full_name %></strong> on <%= record.checkout_date %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No Checkout History</p>
+    <% end %>
 
-<% else %>
-  <% if @book.checked_in %>
-    <form action="/catalog/<%= @book.id %>/checkout" method="post">
-      <input type="hidden" name="_method" value="patch">
-      <button type="submit" class="btn">Check Out</button>
-    </form>
   <% else %>
-    <form action="/catalog/<%= @book.id %>/checkin" method="post">
-      <input type="hidden" name="_method" value="patch">
-      <button type="submit" class="btn">Check In</button>
-    </form>
+    <% if @book.checked_in %>
+      <form action="/catalog/<%= @book.id %>/checkout" method="post">
+        <input type="hidden" name="_method" value="patch">
+        <button type="submit" class="btn">Check Out</button>
+      </form>
+    <% else %>
+      <form action="/catalog/<%= @book.id %>/checkin" method="post">
+        <input type="hidden" name="_method" value="patch">
+        <button type="submit" class="btn">Check In</button>
+      </form>
+    <% end %>
   <% end %>
 <% end %>
+
 
 <p><a href="/catalog">Back to Catalog</a></p>

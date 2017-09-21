@@ -70,31 +70,57 @@ describe('Administrator access', {:type => :feature}) do
     click_button('Update Book')
     expect(page).to have_content("Harry Potter and the Deathly Hallows")
   end
+
+  it 'allows admin to delete a patron' do
+    visit('/')
+    visit('/login')
+    fill_in('username', with: "librarian")
+    fill_in('password', with: "library")
+    click_button('Log In')
+    click_link('Patrons')
+    click_link('Add a Patron')
+    fill_in('first-name', :with => "Frank")
+    fill_in('last-name', :with => "Herbert")
+    click_button('Add Patron')
+    click_link('Frank Herbert')
+    click_link('Edit or Delete')
+    click_link('Delete')
+    click_button('Delete')
+    expect(page).to have_no_content("Frank Herbert")
+  end
+
+  it 'allows admin to delete a book' do
+    visit('/')
+    visit('/login')
+    fill_in('username', with: "librarian")
+    fill_in('password', with: "library")
+    click_button('Log In')
+    click_link('Catalog')
+    click_link('Add a Book')
+    fill_in('title', :with => "Fantastic Beasts")
+    fill_in('author-first', :with => "J. K.")
+    fill_in('author-last', :with => "Rowling")
+    click_button('Add Book')
+    click_link("Fantastic Beasts")
+    click_link('Edit or Delete')
+    click_link('Delete')
+    click_button('Delete')
+    expect(page).to have_no_content("Fantastic Beasts")
+  end
 end
-#
-#   it 'allows admin to delete a book' do
-#     visit('/admin')
-#     click_link('Books')
-#     click_link('Add a Book')
-#     fill_in('title', :with => "Harry Potter")
-#     fill_in('author-first', :with => "J. K.")
-#     fill_in('author-last', :with => "Rowling")
-#     click_button('Add Book')
-#     click_link('Harry Potter')
-#     click_button('Delete')
-#     expect(page).to have_no_content("Harry Potter")
-#   end
-# end
-#
-# describe('Patron Portal', {:type =>:feature}) do
-#   it 'allows patron to checkout a book and check a book in' do
-#     visit('/patron')
-#     click_button('Sign In')
-#     click_link('Catalog')
-#     click_link('Harry Potter')
-#     click_button('Check Out')
-#     expect(page).to have_content("Checked Out")
-#     click_button('Check In')
-#     expect(page).to have_content("Checked In")
-#   end
-# end
+
+describe('Patron Portal', {:type =>:feature}) do
+  it 'allows patron to checkout a book and check a book in' do
+    visit('/')
+    click_link('Log In')
+    fill_in('username', with: "bob")
+    fill_in('password', with: "1234")
+    click_button('Log In')
+    click_link('Catalog')
+    first('.book').click_link('Harry Potter')
+    click_button('Check Out')
+    expect(page).to have_content("Checked Out")
+    click_button('Check In')
+    expect(page).to have_content("Checked In")
+  end
+end
