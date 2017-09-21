@@ -182,6 +182,17 @@ get('/patrons/:id/edit') do
   erb(:patron_form)
 end
 
+patch('/patrons/:id/edit') do
+  patron_id = params[:id].to_i
+  @patron = Patron.find(patron_id).first
+  if @patron
+    @patron.first_name = params["first-name"]
+    @patron.last_name = params["last-name"]
+    @patron.save
+  end
+  redirect "/patrons/#{patron_id}"
+end
+
 get('/account/:type') do
   @type = params[:type]
   @patron = Patron.find(@user.patron_id).first
