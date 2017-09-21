@@ -4,36 +4,8 @@ Capybara.app = Sinatra::Application
 set(:show_exceptions, false)
 
 describe('Administrator access', {:type => :feature}) do
-  it 'allows admin to add new books' do
-    visit('/')
-    visit('/login')
-    fill_in('username', with: "librarian")
-    fill_in('password', with: "library")
-    click_button('Log In')
-    click_link('Catalog')
-    click_link('Add a Book')
-    fill_in('title', :with => "Harry Potter and the Goblet of Fire")
-    fill_in('author-first', :with => "J. K.")
-    fill_in('author-last', :with => "Rowling")
-    click_button('Add Book')
-    expect(page).to have_content("Harry Potter and the Goblet of Fire")
-  end
 
-  it "allows admin to add new patrons" do
-    visit('/')
-    visit('/login')
-    fill_in('username', with: "librarian")
-    fill_in('password', with: "library")
-    click_button('Log In')
-    click_link('Patrons')
-    click_link('Add a Patron')
-    fill_in('first-name', :with => "Bob")
-    fill_in('last-name', :with => "Smith")
-    click_button('Add Patron')
-    expect(page).to have_content("Bob Smith")
-  end
-
-  it 'allows admin to edit a patron' do
+  it 'allows admin to add and edit patrons' do
     visit('/')
     visit('/login')
     fill_in('username', with: "librarian")
@@ -52,7 +24,7 @@ describe('Administrator access', {:type => :feature}) do
     expect(page).to have_content("James Jenkins")
   end
 
-  it 'allows admin to edit a book' do
+  it 'allows admin to add and edit books' do
     visit('/')
     visit('/login')
     fill_in('username', with: "librarian")
@@ -122,5 +94,37 @@ describe('Patron Portal', {:type =>:feature}) do
     expect(page).to have_content("Checked Out")
     click_button('Check In')
     expect(page).to have_content("Checked In")
+  end
+
+  it 'allows patron to view their checkouts' do
+    visit('/')
+    click_link('Log In')
+    fill_in('username', with: "bob")
+    fill_in('password', with: "1234")
+    click_button('Log In')
+    click_link('Catalog')
+    first('.book').click_link('Harry Potter')
+    click_button('Check Out')
+    click_link('Checkouts')
+    expect(page).to have_content('Harry Potter')
+  end
+
+  it "allows user to edit or delete their account" do
+    visit('/')
+    click_link('Log In')
+    fill_in('username', with: "bob")
+    fill_in('password', with: "1234")
+    click_button('Log In')
+    click_link('Account')
+    click_link('Update or Delete')
+    fill_in('email', with: "robert@email.com")
+    fill_in('password', with: "1234")
+    click_button('Update')
+    expect(page).to have_content('robert@email.com')
+    click_link('Update or Delete')
+    click_link('Delete')
+    fill_in('password', with: "1234")
+    click_button('Delete')
+    expect(page).to have_content("Log In")
   end
 end

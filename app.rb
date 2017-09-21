@@ -213,7 +213,9 @@ patch('/update-account') do
   if @user.check_password?(params["password"])
     @user.username = params["username"]
     @user.email = params["email"]
-    @user.password = params["new-password"]
+    if params["new-password"].length != 0
+      @user.password = params["new-password"]
+    end
     @user.save
     redirect '/account'
   else

@@ -3,7 +3,7 @@
 class User
   attr_reader :id, :username, :admin, :patron_id
   attr_writer :password
-  attr_accessor :email
+  attr_accessor :email, :username
 
   def initialize(attributes)
     @id = attributes.fetch(:id) { nil }
