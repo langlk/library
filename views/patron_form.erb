@@ -1,7 +1,9 @@
-<h1>Edit Patron</h1>
+<h1><%= @action.capitalize %> a Patron</h1>
 
-<form action="/patrons/<%= @patron.id %>" method="post">
-  <input type="hidden" name="_method" value="patch">
+<form action="/<%= @action %>-patron" method="post">
+  <% if @action == "edit" %>
+    <input type="hidden" name="_method" value="patch">
+  <% end %>
   <div class="form-group">
     <label for="first-name">First Name:</label>
     <input type="text" name="first-name" class="form-control">
@@ -12,5 +14,5 @@
     <input type="text" name="last-name" class="form-control">
   </div>
 
-  <button type="submit" class="btn">Edit Patron</button>
+  <button type="submit" class="btn"><%= @action.capitalize %> Patron</button>
 </form>

@@ -1,21 +1,17 @@
 <h1>Patron Record</h1>
 
-<% if @user == "admin" %>
-  <a href="/admin/patrons/<%= @patron.id %>/edit"><button type="button" class="btn">Edit</button></a>
-  <form action="/admin/patrons/<%= @patron.id %>" method="post">
-    <input type="hidden" name="_method" value="delete">
-    <button type="submit" class="btn">Delete</button>
-  </form>
-<% end %>
+<h5><a href="/patrons/<%= @patron.id %>/edit">Edit</a><h5>
 
 <p><strong>Name:</strong> <%= @patron.full_name %></p>
+
+<p><strong>ID:</strong> <%= @patron.id %></p>
 <p><strong>Checkouts:</strong></p>
 <% if @patron.get_checkouts.any? %>
   <ul>
     <% @patron.get_checkouts.each do |checkout| %>
       <% book = Book.find(checkout.book_id).first %>
       <li>
-        <a href="/<%= @patron.id %>/books/<%= book.id %>"><em><%= book.title %></em></a> Due: <%= checkout.due_date %>
+        <a href="/catalog/<%= book.id %>"><em><%= book.title %></em></a> Due: <%= checkout.due_date %>
       </li>
     <% end %>
   </ul>
@@ -23,9 +19,4 @@
   <p>No books saved to patron.</p>
 <% end %>
 
-<% if @user == "admin" %>
-  <p><a href="/admin/patrons">Back to patrons list</a></p>
-<% else %>
-  <a href="/<%= @patron.id %>/books"><button type="button" class="btn">Catalog</button></a>
-  <p><a href="/patron">Log Out</a></p>
-<% end %>
+<p><a href="/patrons">Back to patrons list</a></p>

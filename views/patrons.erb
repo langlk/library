@@ -1,12 +1,12 @@
 <h1>Patrons</h1>
 
-<p><a href="/patrons/add">Add a Patron</a></p>
+<p><a href="/add-patron">Add a Patron</a></p>
 
 <% if @patrons.any? %>
   <ul>
     <% @patrons.each do |patron| %>
       <li>
-        <a href="/admin/patrons/<%= patron.id %>"><%= patron.full_name %></a>
+        <a href="/patrons/<%= patron.id %>"><%= patron.full_name %></a>
       </li>
     <% end %>
   </ul>

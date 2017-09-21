@@ -1,6 +1,6 @@
 <h1><%= @action.capitalize %> a Book</h1>
 
-<form action="/catalog/<%= @action %>" method="post">
+<form action="/<%= @action %>-book" method="post">
   <% if @action == "edit" %>
     <input type="hidden" name="_method" value="patch">
   <% end %>
