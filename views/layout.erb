@@ -17,7 +17,23 @@
         <h1>Epicodus Library</h1>
         <ul class="nav nav-pills">
           <li role="presentation"><a href="/">Home</a></li>
-          <li role="presentation"><a href="/login">Log In</a></li>
+          <li role="presentation"><a href="/catalog">Catalog</a></li>
+          <% if @user %>
+            <% if @user.admin %>
+              <li role="presentation"><a href="/patrons">Patrons</a></li>
+            <% else %>
+              <li role="presentation"><a href="/checkouts">Checkouts</a></li>
+              <li role="presentation"><a href="/history">History</a></li>
+            <% end %>
+            <li role="presentation"><a href="/account">Account</a></li>
+            <li role="presentation">
+              <form class="logout" action="/logout" method="post">
+                <button type="submit" class="btn">Log Out</button>
+              </form>
+            </li>
+          <% else %>
+            <li role="presentation"><a href="/login">Log In</a></li>
+          <% end %>
         </ul>
       </div>
     </div>

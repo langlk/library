@@ -5,11 +5,27 @@ require "pg"
 require "./lib/book"
 require "./lib/patron"
 require "./lib/checkout"
+require "./lib/user"
 require "pry"
 
+# SETUP
+
 DB = PG.connect({:dbname => 'library_test'})
+enable :sessions
+
+admin = User.new({
+  patron_id: -1,
+  email: "admin@library.com",
+  username: "librarian",
+  password: "library",
+  admin: true
+})
+admin.save
+
+# ROUTES
 
 get('/') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
   erb(:index)
 end
 
@@ -21,37 +37,85 @@ get('/signup') do
   erb(:signup)
 end
 
-get('/admin') do
-  erb(:admin)
+post('/login') do
+  user = User.find_user(params["username"])
+  if user
+    if user.check_password?(params["password"])
+      session[:id] = user.id
+      redirect "/"
+    end
+  end
+  @error = true
+  erb(:login)
 end
 
-get('/:user/books') do
-  @user = params[:user]
+post('/signup') do
+  user = User.new({
+    patron_id: params["patron_id"].to_i,
+    username: params["username"],
+    email: params["email"],
+    password: params["password"]
+  })
+  user.save
+  session[:id] = user.id
+  redirect "/"
+end
+
+post('/logout') do
+  session.clear
+  redirect '/'
+end
+
+get('/catalog') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
   @books = Book.all
-  erb(:books_list)
+  erb(:catalog)
 end
 
-get('/admin/patrons') do
+get('/catalog/:id') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
+  @book = Book.find(params[:id].to_i).first
+  erb(:book)
+end
+
+patch('/catalog/:book_id/checkout') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
+  if @user
+    book_id = params[:book_id].to_i
+    book = Book.find(book_id).first
+    book.checkout(@user.patron_id)
+  end
+  redirect "/catalog/#{book_id}"
+end
+
+get('/catalog/add') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
+  @action = "add"
+  erb(:book_form)
+end
+
+post('/catalog/add') do
+  book = Book.new({
+    title: params["title"],
+    author_first: params["author-first"],
+    author_last: params["author-last"]
+  })
+  book.save
+  redirect "/catalog"
+end
+
+# Refactoring line
+get('/patrons') do
+  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
   @patrons = Patron.all
-  erb(:admin_patrons)
+  erb(:patrons)
 end
 
-get('/patron') do
-  patron2 = Patron.new({:first_name => "Bob", :last_name => "Smith"})
-  patron2.save
-  book2 = Book.new({:title => "Harry Potter", :author_first => "J. K.", :author_last => "Rowling"})
-  book2.save
-  @id = patron2.id
-  erb(:patron_portal)
-end
-
-get('/patron/add') do
+get('/patrons/add') do
   erb(:add_patron)
 end
 
-get('/book/add') do
-  erb(:add_book)
-end
+
 
 post('/patron/add') do
   patron = Patron.new({
@@ -67,28 +131,13 @@ post('/patron') do
   redirect "/patron/patrons/#{@patron.id}"
 end
 
-post('/book/add') do
-  book = Book.new({
-    title: params["title"],
-    author_first: params["author-first"],
-    author_last: params["author-last"]
-  })
-  book.save
-  redirect "/admin/books"
-end
+
 
 get('/:user/patrons/:id') do
   id = params[:id].to_i
   @user = params[:user]
   @patron = Patron.find(id).first
   erb(:patron)
-end
-
-get('/:user/books/:id') do
-  id = params[:id].to_i
-  @user = params[:user]
-  @book = Book.find(id).first
-  erb(:book)
 end
 
 patch('/:patron_id/:book_id/checkout') do

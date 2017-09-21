@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 class Book
-  attr_reader :id, :title, :author_first, :author_last
-  attr_accessor :checked_in
+  attr_reader :id
+  attr_accessor :checked_in, :title, :author_first, :author_last
 
   def initialize(args)
     @id = args[:id] || nil

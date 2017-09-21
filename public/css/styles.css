@@ -2,3 +2,14 @@ footer {
   margin-top: 20px;
   margin-bottom: 30px;
 }
+
+form.logout {
+  display: inline-block;
+}
+
+.logout .btn {
+  background: transparent;
+  height: 40px;
+  vertical-align: middle;
+  border: none;
+}

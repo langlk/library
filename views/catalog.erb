@@ -1,0 +1,19 @@
+<h1>Library Catalog</h1>
+
+<% if @user %>
+  <% if @user.admin %>
+    <p><a href="/catalog/add">Add a Book</a></p>
+  <% end %>
+<% end %>
+
+<% if @books.any? %>
+  <ul>
+    <% @books.each do |book| %>
+      <li>
+        <a href="/catalog/<%= book.id %>"><%= book.title %></a>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>There are currently no books.</p>
+<% end %>
