@@ -26,18 +26,33 @@ describe('User') do
     end
   end
 
+  describe('#save') do
+    it "saves a user to the database" do
+      test_user.save
+      expect(User.all).to eq([test_user])
+    end
+
+    it "updates a saved user's data" do
+      test_user.save
+      test_user.make_admin
+      test_user.save
+      expect(User.find_id(test_user.id).admin).to eq(true)
+    end
+  end
+
+  describe('#make_admin') do
+    it "makes a user an admin" do
+      test_user.make_admin
+      expect(test_user.admin).to eq(true)
+    end
+  end
+
   describe(".all") do
     it "returns a list of all users in the database" do
       expect(User.all).to eq([])
     end
   end
 
-  describe('#save') do
-    it "saves a user to the database" do
-      test_user.save
-      expect(User.all).to eq([test_user])
-    end
-  end
 
   describe('.find_id') do
     it "finds a user by their id" do

@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 class User
-  attr_reader :id, :email, :username, :admin, :patron_id
+  attr_reader :id, :username, :admin, :patron_id
+  attr_writer :password
+  attr_accessor :email
 
   def initialize(attributes)
     @id = attributes.fetch(:id) { nil }
@@ -9,7 +11,7 @@ class User
     @email = attributes[:email]
     @username = attributes[:username]
     @password = attributes[:password]
-    @admin = false
+    @admin = attributes.fetch(:admin) { false }
   end
 
   def check_password?(input)
@@ -17,8 +19,16 @@ class User
   end
 
   def save
-    results = DB.exec("INSERT INTO users (patron_id, email, username, password, admin) VALUES (#{@patron_id}, '#{@email}', '#{@username}', '#{@password}', #{@admin}) RETURNING id;")
-    @id = results.first["id"].to_i
+    if @id
+      DB.exec("UPDATE users SET patron_id = #{@patron_id}, email = '#{@email}', username = '#{@username}', password = '#{@password}', admin = #{@admin} WHERE id = #{@id};")
+    else
+      results = DB.exec("INSERT INTO users (patron_id, email, username, password, admin) VALUES (#{@patron_id}, '#{@email}', '#{@username}', '#{@password}', #{@admin}) RETURNING id;")
+      @id = results.first["id"].to_i
+    end
+  end
+
+  def make_admin
+    @admin = true
   end
 
   def self.all
@@ -30,7 +40,7 @@ class User
         email: user["email"],
         username: user["username"],
         password: user["password"],
-        admin: ((user["admin"] == "t") ? true : false)
+        admin: user["admin"] == "t"
       })
     end
   end
@@ -43,7 +53,7 @@ class User
       email: results.first["email"],
       username: results.first["username"],
       password: results.first["password"],
-      admin: ((results.first["admin"] == "t") ? true : false)
+      admin: results.first["admin"] == "t"
     })
   end
 
@@ -55,7 +65,7 @@ class User
       email: results.first["email"],
       username: results.first["username"],
       password: results.first["password"],
-      admin: ((results.first["admin"] == "t") ? true : false)
+      admin: results.first["admin"] == "t"
     })
   end
 
@@ -67,7 +77,7 @@ class User
       email: results.first["email"],
       username: results.first["username"],
       password: results.first["password"],
-      admin: ((results.first["admin"] == "t") ? true : false)
+      admin: results.first["admin"] == "t"
     })
   end
 
