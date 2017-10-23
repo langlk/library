@@ -4,11 +4,12 @@ require("bundler/setup")
 Bundler.require(:default)
 
 Dir[File.dirname(__FILE__) + '/lib/*.rb'].each { |file| require file }
-enable :sessions
+
+set :sessions, true
 
 # ROUTES
 before do
-  @user = session[:id] != nil ? User.find_id(session[:id]) : nil
+  @user = session[:id] != nil ? User.find(session[:id]) : nil
 end
 
 get('/') do
@@ -55,7 +56,7 @@ get('/signup') do
 end
 
 post('/login') do
-  user = User.find_user(params["username"])
+  user = User.find_by username: params["username"]
   if user
     if user.check_password?(params["password"])
       session[:id] = user.id
@@ -89,15 +90,20 @@ get('/catalog') do
 end
 
 get('/catalog/:id') do
-  @book = Book.find(params[:id].to_i).first
+  @book = Book.find(params[:id].to_i)
   erb(:book)
 end
 
 patch('/catalog/:book_id/checkout') do
   if @user
     book_id = params[:book_id].to_i
-    book = Book.find(book_id).first
-    book.checkout(@user.patron_id)
+    book = Book.find(book_id)
+    book.checkouts.create({
+      patron_id: @user.patron_id,
+      checkout_date: Date.today,
+      due_date: Date.today + 21,
+      checked_in: false
+    })
   end
   redirect "/catalog/#{book_id}"
 end
@@ -105,8 +111,8 @@ end
 patch('/catalog/:book_id/checkin') do
   if @user
     book_id = params[:book_id].to_i
-    book = Book.find(book_id).first
-    book.checkin
+    checkout = Checkout.where("book_id = ? AND checked_in = ?", book_id, false)
+    checkout.update({checked_in: true})
   end
   redirect "catalog/#{book_id}"
 end
@@ -127,19 +133,18 @@ post('/add-book') do
 end
 
 get('/catalog/:book_id/edit') do
-  @book = Book.find(params[:book_id].to_i).first
+  @book = Book.find(params[:book_id].to_i)
   @action = "edit"
   erb(:book_form)
 end
 
 patch('/catalog/:book_id/edit') do
-  @book = Book.find(params[:book_id].to_i).first
-  if @book
-    @book.title = params["title"]
-    @book.author_first = params["author-first"]
-    @book.author_last = params["author-last"]
-    @book.save
-  end
+  @book = Book.find(params[:book_id].to_i)
+  @book.update({
+    title: params["title"],
+    author_first: params["author-first"],
+    author_last: params["author-last"]
+  })
   redirect "/catalog/#{@book.id}"
 end
 
@@ -164,37 +169,36 @@ end
 
 get('/patrons/:id') do
   id = params[:id].to_i
-  @patron = Patron.find(id).first
+  @patron = Patron.find(id)
   erb(:patron)
 end
 
 get('/patrons/:id/edit') do
   patron_id = params[:id].to_i
-  @patron = Patron.find(patron_id).first
+  @patron = Patron.find(patron_id)
   @action = "edit"
   erb(:patron_form)
 end
 
 patch('/patrons/:id/edit') do
   patron_id = params[:id].to_i
-  @patron = Patron.find(patron_id).first
-  if @patron
-    @patron.first_name = params["first-name"]
-    @patron.last_name = params["last-name"]
-    @patron.save
-  end
+  @patron = Patron.find(patron_id)
+  @patron.update({
+    first_name: params["first-name"],
+    last_name: params["last-name"]
+  })
   redirect "/patrons/#{patron_id}"
 end
 
 get('/account/:type') do
   @type = params[:type]
-  @patron = Patron.find(@user.patron_id).first
-  @checkouts = @patron.get_checkouts
+  @patron = Patron.find(@user.patron_id)
+  @checkouts = @patron.checkouts
   erb(:checkouts)
 end
 
 get('/account') do
-  @patron = @user.admin ? nil : Patron.find(@user.patron_id).first
+  @patron = @user.admin ? nil : Patron.find(@user.patron_id)
   erb(:account)
 end
 
@@ -204,12 +208,11 @@ end
 
 patch('/update-account') do
   if @user.check_password?(params["password"])
-    @user.username = params["username"]
-    @user.email = params["email"]
-    if params["new-password"].length != 0
-      @user.password = params["new-password"]
-    end
-    @user.save
+    @user.update({
+      username: params["username"],
+      email: params["email"],
+      password: params["new-password"].length != 0 ? params["new-password"] : @user.password
+    })
     redirect '/account'
   else
     @error = true
@@ -227,7 +230,7 @@ delete('/:type/:id') do
   @type = params[:type]
   if @type == "account"
     if @user.check_password?(params["password"])
-      @user.delete
+      @user.destroy
       session.clear
       redirect '/'
     else
@@ -236,12 +239,12 @@ delete('/:type/:id') do
       erb(:delete)
     end
   elsif @type == "catalog"
-    book = Book.find(params[:id].to_i).first
-    book.delete
+    book = Book.find(params[:id].to_i)
+    book.destroy
     redirect '/catalog'
   else
-    patron = Patron.find(params[:id].to_i).first
-    patron.delete
+    patron = Patron.find(params[:id].to_i)
+    patron.destroy
     redirect '/patrons'
   end
 end

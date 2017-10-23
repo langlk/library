@@ -10,16 +10,16 @@
 <p><strong>Title:</strong> <em><%= @book.title %></em></p>
 <p><strong>Author:</strong> <%= @book.author_name %></p>
 <p><strong>
-  <%= @book.checked_in ? "Checked In" : "Checked Out" %>
+  <%= @book.checked_in? ? "Checked In" : "Checked Out" %>
 </strong></p>
 
 <% if @user %>
   <% if @user.admin %>
     <p><strong>Checkout Log:</strong></p>
-    <% if @book.get_checkouts.any? %>
+    <% if @book.checkouts.any? %>
       <ul>
-        <% @book.get_checkouts.each do |record| %>
-          <% patron = Patron.find(record.patron_id).first %>
+        <% @book.checkouts.each do |record| %>
+          <% patron = record.patron %>
           <li>
             <strong><%= patron.full_name %></strong> on <%= record.checkout_date %>
           </li>
@@ -30,7 +30,7 @@
     <% end %>
 
   <% else %>
-    <% if @book.checked_in %>
+    <% if @book.checked_in? %>
       <form action="/catalog/<%= @book.id %>/checkout" method="post">
         <input type="hidden" name="_method" value="patch">
         <button type="submit" class="btn">Check Out</button>

@@ -8,12 +8,12 @@
   <ul>
     <% @checkouts.each do |checkout| %>
       <% if (@type == "history") %>
-        <% book = Book.find(checkout.book_id).first %>
+        <% book = checkout.book %>
         <li>
           <a href="/catalog/<%= book.id %>"><em><%= book.title %></em></a> Checked Out: <%= checkout.checkout_date %>
         </li>
       <% elsif (@type == "checkouts") & !checkout.checked_in %>
-        <% book = Book.find(checkout.book_id).first %>
+        <% book = checkout.book %>
         <li>
           <a href="/catalog/<%= book.id %>"><em><%= book.title %></em></a> Due: <%= checkout.due_date %>
         </li>
