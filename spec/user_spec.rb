@@ -7,7 +7,8 @@ describe 'User' do
     email: "bob@email.com",
     username: "bobsmith",
     password: "password123",
-  patron_id: 1})  }
+    patron_id: 1
+  })  }
 
 
   describe '#check_password?' do
