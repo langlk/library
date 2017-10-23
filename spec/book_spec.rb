@@ -9,13 +9,13 @@ describe 'Book' do
     author_last: "Rowling"
   })  }
 
-  describe 'author_name' do
+  describe '#author_name' do
     it "returns author's first and last names, separated by a space" do
       expect(book.author_name).to eq("J. K. Rowling")
     end
   end
 
-  describe 'Checkouts' do
+  describe '#checkouts' do
     it "returns all recorded checkouts for a book" do
       book.save
       checkout = Checkout.create({
@@ -29,7 +29,7 @@ describe 'Book' do
     end
   end
 
-  describe 'Patrons' do
+  describe '#patrons' do
     it "returns all patrons who have checked out a book" do
       book.save
       patron = Patron.create({
