@@ -1,19 +1,33 @@
 #!/usr/bin/env ruby
+ENV['RACK_ENV'] = 'test'
 
-require "rspec"
-require "pg"
-require "book"
-require "checkout"
-require "patron"
-require "user"
+require("bundler/setup")
+Bundler.require(:default, :test)
+set(:root, Dir.pwd())
 
-DB = PG.connect({:dbname => 'library_test'})
+require('capybara/rspec')
+Capybara.app = Sinatra::Application
+set(:show_exceptions, false)
+require('./app')
+
+Dir[File.dirname(__FILE__) + '/../lib/*.rb'].each { |file| require file }
 
 RSpec.configure do |config|
   config.after(:each) do
-    DB.exec("DELETE FROM books *;")
-    DB.exec("DELETE FROM checkouts *;")
-    DB.exec("DELETE FROM patrons *;")
-    DB.exec("DELETE FROM users *;")
+    Book.all.each do |book|
+      book.destroy
+    end
+
+    Checkout.all.each do |checkout|
+      checkout.destroy
+    end
+
+    Patron.all.each do |patron|
+      patron.destroy
+    end
+
+    User.all.each do |user|
+      user.destroy
+    end
   end
 end

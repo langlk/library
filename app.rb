@@ -1,16 +1,9 @@
-require "sinatra"
-require "sinatra/reloader"
-also_reload "lib/**/*.rb"
-require "pg"
-require "./lib/book"
-require "./lib/patron"
-require "./lib/checkout"
-require "./lib/user"
-require "pry"
+#!/usr/bin/env ruby
 
-# SETUP
+require("bundler/setup")
+Bundler.require(:default)
 
-DB = PG.connect({:dbname => 'library_test'})
+Dir[File.dirname(__FILE__) + '/lib/*.rb'].each { |file| require file }
 enable :sessions
 
 # ROUTES

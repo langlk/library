@@ -1,0 +1,6 @@
+development:
+  adapter: postgresql
+  database: library_development
+test:
+  adapter: postgresql
+  database: library_test
