@@ -9,7 +9,7 @@ describe 'Checkout' do
     checkout_date: "2017-09-20"
   }) }
 
-  describe "book" do
+  describe "#book" do
     it "returns the book assigned to a checkout" do
       book = Book.create({
         :title => "Harry Potter",
