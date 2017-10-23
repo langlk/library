@@ -21,13 +21,13 @@ RSpec.configure do |config|
     Checkout.all.each do |checkout|
       checkout.destroy
     end
-
-    Patron.all.each do |patron|
-      patron.destroy
-    end
-
-    User.all.each do |user|
-      user.destroy
-    end
+    #
+    # Patron.all.each do |patron|
+    #   patron.destroy
+    # end
+    #
+    # User.all.each do |user|
+    #   user.destroy
+    # end
   end
 end
