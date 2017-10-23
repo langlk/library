@@ -8,13 +8,13 @@ describe 'Patron' do
     :last_name => "Smith"
   }) }
 
-  describe "full_name" do
+  describe "#full_name" do
     it "returns the full name of a patron, separated by spaces" do
       expect(patron.full_name).to eq("Bob Smith")
     end
   end
 
-  describe "checkouts" do
+  describe "#checkouts" do
     it "returns all of a patron's checkouts" do
       patron.save
       checkout = Checkout.create({
@@ -28,7 +28,7 @@ describe 'Patron' do
     end
   end
 
-  describe "books" do
+  describe "#books" do
     it "returns all books a patron has checked out" do
       patron.save
       book = Book.create({
@@ -44,6 +44,19 @@ describe 'Patron' do
         checked_in: false
       })
       expect(patron.books).to eq([book])
+    end
+  end
+
+  describe '#user' do
+    it "returns the user account associated with the patron" do
+      patron.save
+      user = User.create({
+        email: "bob@email.com",
+        username: "bobsmith",
+        password: "password123",
+        patron_id: patron.id
+      })
+      expect(patron.user).to eq(user)
     end
   end
 end
