@@ -33,13 +33,4 @@ describe 'Checkout' do
       expect(checkout.patron).to eq(patron)
     end
   end
-
-  # describe ".overdue" do
-  #   it "returns a list of all overdue checkouts" do
-  #     checkout.save
-  #     overdue_checkout = Checkout.new({book_id: 1, patron_id: 2, checkout_date: "2017-07-20"})
-  #     overdue_checkout.save
-  #     expect(Checkout.overdue).to eq [overdue_checkout]
-  #   end
-  # end
 end
