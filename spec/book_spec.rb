@@ -4,9 +4,9 @@ require 'spec_helper'
 
 describe 'Book' do
   let :book { Book.new({
-    :title => "Harry Potter",
-    :author_first => "J. K.",
-    :author_last => "Rowling"
+    title: "Harry Potter",
+    author_first: "J. K.",
+    author_last: "Rowling"
   })  }
 
   describe 'author_name' do
@@ -19,12 +19,30 @@ describe 'Book' do
     it "returns all recorded checkouts for a book" do
       book.save
       checkout = Checkout.create({
-        :patron_id => 0,
-        :book_id => book.id,
-        :checkout_date => Date.today,
-        :due_date => Date.today,
-        :checked_in => false
+        patron_id: 0,
+        book_id: book.id,
+        checkout_date: Date.today,
+        due_date: Date.today,
+        checked_in: false
         })
+      expect(book.checkouts).to eq([checkout])
+    end
+  end
+
+  describe 'Patrons' do
+    it "returns all patrons who have checked out a book" do
+      book.save
+      patron = Patron.create({
+        first_name: 'Bob',
+        last_name: 'Smith'
+      })
+      checkout = Checkout.create({
+        patron_id: patron.id,
+        book_id: book.id,
+        checkout_date: Date.today,
+        due_date: Date.today,
+        checked_in: false
+      })
       expect(book.checkouts).to eq([checkout])
     end
   end
