@@ -27,4 +27,23 @@ describe 'Patron' do
       expect(patron.checkouts).to eq([checkout])
     end
   end
+
+  describe "books" do
+    it "returns all books a patron has checked out" do
+      patron.save
+      book = Book.create({
+        title: "Harry Potter",
+        author_first: "J. K.",
+        author_last: "Rowling"
+      })
+      checkout = Checkout.create({
+        patron_id: patron.id,
+        book_id: book.id,
+        checkout_date: Date.today,
+        due_date: Date.today,
+        checked_in: false
+      })
+      expect(patron.books).to eq([book])
+    end
+  end
 end
