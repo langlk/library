@@ -46,4 +46,30 @@ describe 'Book' do
       expect(book.checkouts).to eq([checkout])
     end
   end
+
+  describe '#checked_in' do
+    it "returns false if book has a checkout still set to checked out" do
+      book.save
+      checkout = Checkout.create({
+        patron_id: 0,
+        book_id: book.id,
+        checkout_date: Date.today,
+        due_date: Date.today,
+        checked_in: false
+      })
+      expect(book.checked_in?).to eq(false)
+    end
+
+    it "returns ture if book has no checked out checkouts" do
+      book.save
+      checkout = Checkout.create({
+        patron_id: 0,
+        book_id: book.id,
+        checkout_date: Date.today,
+        due_date: Date.today,
+        checked_in: true
+      })
+      expect(book.checked_in?).to eq(true)
+    end
+  end
 end
