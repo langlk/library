@@ -22,6 +22,18 @@ describe 'Checkout' do
     end
   end
 
+  describe '#patron' do
+    it "returns the patron assigned to a checkout" do
+      patron = Patron.create({
+        first_name: "Bob",
+        last_name: "Smith"
+      })
+      checkout.patron_id = patron.id
+      checkout.save
+      expect(checkout.patron).to eq(patron)
+    end
+  end
+
   # describe ".overdue" do
   #   it "returns a list of all overdue checkouts" do
   #     checkout.save
