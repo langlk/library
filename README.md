@@ -11,8 +11,12 @@ _A Ruby Web App_
 ## Setup/Installation Requirements
 
 * Clone this repository
-
-## Specifications
+* Run ```bundle install``` in the project root directory
+* Ensure you have Postgres installed and running ([instructions here](https://www.learnhowtoprogram.com/ruby/ruby-database-basics/installing-postgres-7fb0cff7-a0f5-4b61-a0db-8a928b9f67ef))
+* Create a database ```volunteer_tracker``` by running the command ```createdb -T template0 volunteer_tracker```
+* Run the command ```psql volunteer_tracker < my_database.sql``` in the project root directory
+* Run the command ```ruby app.rb``` in the project root directory
+* Open ```localhost:4567``` in your web browser
 
 ## Support and contact details
 
